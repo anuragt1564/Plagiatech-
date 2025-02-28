@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlagiaTech - Check & Rephrase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #000000;
+            color: #FFFFFF;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+        /* Animated Background Streaks */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF);
+            opacity: 0.05;
+            z-index: -1;
+            animation: streakMove 10s infinite linear;
+        }
+        @keyframes streakMove {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        header {
+            text-align: center;
+            padding: 30px;
+        }
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo::before {
+            content: '∞'; /* Interlocking loop symbol */
+            font-size: 2rem;
+            margin-right: 10px;
+            background: linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-text {
+            background: linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        nav {
+            margin-top: 15px;
+        }
+        nav a {
+            color: #FFFFFF;
+            text-decoration: none;
+            margin: 0 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #00FFFF;
+        }
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            text-align: center;
+        }
+        .tagline {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+        .input-area textarea {
+            width: 100%;
+            height: 250px;
+            background: rgba(28, 28, 28, 0.9);
+            border: 2px solid #FFFFFF;
+            color: #FFFFFF;
+            padding: 20px;
+            font-size: 16px;
+            border-radius: 15px;
+            outline: none;
+            resize: none;
+            transition: border-color 0.3s;
+        }
+        .input-area textarea:focus {
+            border-color: #00FFFF;
+            box-shadow: 0 0 8px #00FFFF;
+        }
+        .buttons {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .btn {
+            border: none;
+            color: #FFFFFF;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        .btn:hover::before {
+            left: 100%;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .btn-check {
+            background: linear-gradient(45deg, #00FFFF, #1DB954);
+        }
+        .btn-rephrase {
+            background: linear-gradient(45deg, #FF007A, #9B00FF);
+        }
+        .results .section {
+            background: rgba(28, 28, 28, 0.7);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .results h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #00FFFF;
+        }
+        .report-text, .rephrased-text {
+            color: #FFFFFF;
+            font-size: 16px;
+        }
+        .copy-btn {
+            background: linear-gradient(45deg, #00FFFF, #1DB954);
+            border: none;
+            color: #FFFFFF;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: box-shadow 0.3s;
+        }
+        .copy-btn:hover {
+            box-shadow: 0 0 12px #00FFFF;
+        }
+        .loading {
+            display: none;
+            font-size: 16px;
+            color: #00FFFF;
+            margin-top: 20px;
+        }
+        .error {
+            display: none;
+            font-size: 16px;
+            color: #FF0000;
+            margin-top: 20px;
+        }
+        footer {
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+        }
+        footer a {
+            color: #FFFFFF;
+            text-decoration: none;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: #00FFFF;
+        }
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            .buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .container {
+                padding: 0 25px;
+            }
+            .logo {
+                font-size: 2rem;
+            }
+            .logo::before {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><span class="logo-text">PlagiaTech</span></div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Tools</a>
+            <a href="#">About</a>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="tagline">Unleash Your Words. Powered by AI.</div>
+        <div class="input-area">
+            <textarea id="inputText" placeholder="Paste your text here..."></textarea>
+        </div>
+        <div class="buttons">
+            <button class="btn btn-check" onclick="checkPlagiarism()">Check Plagiarism</button>
+            <button class="btn btn-rephrase" onclick="rephraseText()">Rephrase Text</button>
+        </div>
+        <div class="loading" id="loading">Processing...</div>
+        <div class="error" id="error">An error occurred. Please try again.</div>
+        <div class="results">
+            <div class="section plagiarism-report">
+                <h2>Plagiarism Report</h2>
+                <p class="report-text" id="plagiarismReport">Highlighted text with plagiarism percentage will appear here...</p>
+            </div>
+            <div class="section rephrased-content">
+                <h2>Rephrased Content</h2>
+                <p class="rephrased-text" id="rephrasedContent">Rephrased text will appear here with options to copy or download...</p>
+                <button class="copy-btn" onclick="copyText()">Copy</button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="#">Contact</a>
+    </footer>
+    <script>
+        function checkPlagiarism() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            // Simulate API call
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('plagiarismReport').innerText = '10% similarity detected, sources: [link1, link2]';
+            }, 2000);
+        }
+
+        function rephraseText() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            // Simulate API call
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('rephrasedContent').innerText = 'A quick brown fox jumps over a resting dog';
+            }, 2000);
+        }
+
+        function copyText() {
+            const text = document.getElementById('rephrasedContent').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Text copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+# Web Framework
+fastapi>=0.95.0
+uvicorn>=0.22.0
+python-multipart>=0.0.6
+python-dotenv>=1.0.0
+email-validator>=2.0.0
+pydantic-settings>=2.0.0
+
+# Database (optional)
+# Uncomment these if you need database support
+# sqlalchemy>=2.0.0
+# psycopg2-binary>=2.9.6
+# alembic>=1.10.0
+
+# Authentication
+passlib[bcrypt]>=1.7.4
+pyjwt>=2.6.0
+
+# Async Processing
+celery>=5.2.7
+redis>=4.5.4
+httpx>=0.24.0
+
+# Rate Limiting
+fastapi-limiter>=0.1.5
+
+# Testing
+pytest>=7.3.1
+pytest-asyncio>=0.21.0
+
+# Deployment
+gunicorn>=20.1.0

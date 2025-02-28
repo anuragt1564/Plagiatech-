@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlagiaTech - Check & Rephrase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #000000;
+            color: #FFFFFF;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+        /* Animated Background Streaks */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF);
+            opacity: 0.05;
+            z-index: -1;
+            animation: streakMove 10s infinite linear;
+        }
+        @keyframes streakMove {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        header {
+            text-align: center;
+            padding: 30px;
+        }
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo::before {
+            content: '∞'; /* Interlocking loop symbol */
+            font-size: 2rem;
+            margin-right: 10px;
+            background: linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-text {
+            background: linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 15px auto 0;
+            padding: 0 20px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        nav a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #00FFFF;
+        }
+        .auth-links {
+            display: flex;
+            gap: 10px;
+        }
+        .nav-auth-btn {
+            background: transparent;
+            border: 1px solid #00FFFF;
+            color: #FFFFFF;
+            padding: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .nav-auth-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+        .login-icon {
+            color: #00FFFF;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 100px;
+        }
+        .modal-content {
+            background: rgba(51, 51, 51, 0.95);
+            border-radius: 10px;
+            width: 350px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-modal:hover {
+            color: #fff;
+        }
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            text-align: center;
+        }
+        .tagline {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+        .input-area textarea {
+            width: 100%;
+            height: 250px;
+            background: rgba(51, 51, 51, 0.9);
+            border: 2px solid #FFFFFF;
+            color: #FFFFFF;
+            padding: 20px;
+            font-size: 16px;
+            border-radius: 15px;
+            outline: none;
+            resize: none;
+            transition: border-color 0.3s;
+        }
+        .input-area textarea:focus {
+            border-color: #00FFFF;
+            box-shadow: 0 0 8px #00FFFF;
+        }
+        .buttons {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .btn {
+            border: none;
+            color: #FFFFFF;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        .btn:hover::before {
+            left: 100%;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .btn-check {
+            background: linear-gradient(45deg, #00FFFF, #1DB954);
+        }
+        .btn-rephrase {
+            background: linear-gradient(45deg, #FF007A, #9B00FF);
+        }
+        .results .section {
+            background: rgba(51, 51, 51, 0.7);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .results h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #00FFFF;
+        }
+        .report-text, .rephrased-text {
+            color: #FFFFFF;
+            font-size: 16px;
+        }
+        .copy-btn {
+            background: linear-gradient(45deg, #00FFFF, #1DB954);
+            border: none;
+            color: #FFFFFF;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: box-shadow 0.3s;
+        }
+        .copy-btn:hover {
+            box-shadow: 0 0 12px #00FFFF;
+        }
+        .loading {
+            display: none;
+            font-size: 16px;
+            color: #00FFFF;
+            margin-top: 20px;
+            position: relative;
+        }
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            border: 3px solid #00FFFF;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .error {
+            display: none;
+            font-size: 16px;
+            color: #FF0000;
+            margin-top: 20px;
+        }
+        footer {
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+        }
+        footer a {
+            color: #FFFFFF;
+            text-decoration: none;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: #00FFFF;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            background: rgba(28, 28, 28, 0.9);
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            border-color: #00FFFF;
+            outline: none;
+        }
+        .auth-btn {
+            background: linear-gradient(45deg, #00FFFF, #1DB954);
+            border: none;
+            color: #FFFFFF;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 20px;
+            transition: transform 0.3s;
+        }
+        .auth-btn:hover {
+            transform: scale(1.02);
+        }
+        
+        @media (max-width: 768px) {
+            .buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .container {
+                padding: 0 25px;
+            }
+            .logo {
+                font-size: 2rem;
+            }
+            .logo::before {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><span class="logo-text">PlagiaTech</span></div>
+        <nav>
+            <div class="nav-links">
+                <a href="#" class="active">Home</a>
+                <a href="#">Tools</a>
+                <a href="#">History</a>
+                <a href="#">About</a>
+            </div>
+            <div class="auth-links">
+                <button id="loginBtn" class="nav-auth-btn" onclick="openModal()">
+                    <span class="login-icon">&#x1F464;</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <!-- Login Form -->
+            <div id="loginForm" style="display: block;">
+                <h2 style="color: #00FFFF; margin-top: 0; text-align: center; margin-bottom: 20px;">Login</h2>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginUsername">Username</label>
+                        <input type="text" id="loginUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Login</button>
+                    <p style="text-align: center; margin-top: 15px; color: #aaa; font-size: 14px;">
+                        Don't have an account? <a href="#" onclick="showRegister()" style="color: #00FFFF; text-decoration: none;">Register</a>
+                    </p>
+                </form>
+            </div>
+            
+            <!-- Register Form -->
+            <div id="registerForm" style="display: none;">
+                <h2 style="color: #00FFFF; margin-top: 0; text-align: center; margin-bottom: 20px;">Register</h2>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="registerUsername">Username</label>
+                        <input type="text" id="registerUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Register</button>
+                    <p style="text-align: center; margin-top: 15px; color: #aaa; font-size: 14px;">
+                        Already have an account? <a href="#" onclick="showLogin()" style="color: #00FFFF; text-decoration: none;">Login</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="tagline">Unleash Your Words. Powered by AI.</div>
+        <div class="input-area">
+            <textarea id="inputText" placeholder="Paste your text here..."></textarea>
+        </div>
+        <div class="buttons">
+            <button class="btn btn-check" onclick="checkPlagiarism()">Check Plagiarism</button>
+            <button class="btn btn-rephrase" onclick="rephraseText()">Rephrase Text</button>
+        </div>
+        <div class="loading" id="loading">Processing...</div>
+        <div class="error" id="error">An error occurred. Please try again.</div>
+        <div class="results">
+            <div class="section plagiarism-report">
+                <h2>Plagiarism Report</h2>
+                <p class="report-text" id="plagiarismReport">Highlighted text with plagiarism percentage will appear here...</p>
+            </div>
+            <div class="section rephrased-content">
+                <h2>Rephrased Content</h2>
+                <p class="rephrased-text" id="rephrasedContent">Rephrased text will appear here with options to copy or download...</p>
+                <button class="copy-btn" onclick="copyText()">Copy</button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="#">Contact</a>
+    </footer>
+    
+    <script>
+        // Modal functionality
+        function openModal() {
+            document.getElementById('authModal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
+        
+        // Auth form handlers
+        function showLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+        }
+        
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+        
+        function handleLogin(e) {
+            e.preventDefault();
+            // Simulate login - in production, this would call the API
+            closeModal();
+            alert('Login functionality would be implemented here');
+        }
+        
+        function handleRegister(e) {
+            e.preventDefault();
+            // Simulate registration - in production, this would call the API
+            closeModal();
+            alert('Registration functionality would be implemented here');
+        }
+        
+        // Plagiarism and rephrasing functionality
+        function checkPlagiarism() {
+            const text = document.getElementById('inputText').value.trim();
+            if (!text) {
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').innerText = 'Please enter some text to check';
+                return;
+            }
+            
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            
+            // In production, this would call the API
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('plagiarismReport').innerText = '10% similarity detected, sources: [link1, link2]';
+            }, 2000);
+        }
+        
+        function rephraseText() {
+            const text = document.getElementById('inputText').value.trim();
+            if (!text) {
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').innerText = 'Please enter some text to rephrase';
+                return;
+            }
+            
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            
+            // In production, this would call the API
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('rephrasedContent').innerText = 'A quick brown fox jumps over a resting dog';
+            }, 2000);
+        }
+        
+        function copyText() {
+            const text = document.getElementById('rephrasedContent').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Text copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    </script>
+    <script src="/frontend.js"></script>
+</body>
+</html>
